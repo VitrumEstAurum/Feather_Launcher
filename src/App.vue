@@ -1,236 +1,26 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-import { invoke } from "@tauri-apps/api/core";
 
-type ApiStatus = "idle" | "checking" | "online" | "offline";
+import AppSidebar from "./components/layout/AppSidebar.vue";
+import AppTopbar from "./components/layout/AppTopbar.vue";
+import HomePage from "./pages/HomePage.vue";
 
 const activePage = ref("Home");
-const apiStatus = ref<ApiStatus>("idle");
-const apiMessage = ref("Connection has not been checked");
-const lastChecked = ref("");
-
-const navigation = [
-  { name: "Home", icon: "⌂" },
-  { name: "Catalog", icon: "▦" },
-  { name: "Instances", icon: "◈" },
-  { name: "Downloads", icon: "↓" },
-];
-
-const settingsNavigation = [
-  { name: "Settings", icon: "⚙" },
-];
-
-async function checkModrinth() {
-  if (apiStatus.value === "checking") return;
-
-  apiStatus.value = "checking";
-  apiMessage.value = "Connecting to Modrinth...";
-  
-  try {
-    const result = await invoke<string>("check_api_connection");
-
-    apiStatus.value = "online";
-    apiMessage.value = result;
-  } catch (error) {
-    apiStatus.value = "offline";
-    apiMessage.value = String(error);
-  }
-
-  lastChecked.value = new Date().toLocaleTimeString("ru-RU");
-}
 </script>
 
 <template>
   <div class="app-shell">
-    <!-- Sidebar -->
-    <aside class="sidebar">
-      <div class="brand">
-        <div class="brand-icon">F</div>
-        <div class="brand-name">
-          <span>FEATHER</span>
-          <small>LAUNCHER</small>
-        </div>
-      </div>
+    <AppSidebar
+      :active-page="activePage"
+      @navigate="activePage = $event"
+    />
 
-      <div class="sidebar-label">WORKSPACE</div>
-
-      <nav class="navigation">
-        <button
-          v-for="item in navigation"
-          :key="item.name"
-          class="nav-item"
-          :class="{ active: activePage === item.name }"
-          @click="activePage = item.name"
-        >
-          <span class="nav-icon">{{ item.icon }}</span>
-          <span>{{ item.name }}</span>
-        </button>
-      </nav>
-
-      <div class="sidebar-label settings-label">PREFERENCES</div>
-
-      <nav class="navigation">
-        <button
-          v-for="item in settingsNavigation"
-          :key="item.name"
-          class="nav-item"
-          :class="{ active: activePage === item.name }"
-          @click="activePage = item.name"
-        >
-          <span class="nav-icon">{{ item.icon }}</span>
-          <span>{{ item.name }}</span>
-        </button>
-      </nav>
-
-      <div class="sidebar-bottom">
-        <div class="account-card">
-          <div class="account-avatar">?</div>
-          <div class="account-info">
-            <strong>Local profile</strong>
-            <span>No account connected</span>
-          </div>
-          <span class="account-menu">···</span>
-        </div>
-
-        <div class="sidebar-footer">
-          <span>FEATHER v0.1.0</span>
-          <span class="footer-dot"></span>
-        </div>
-      </div>
-    </aside>
-
-    <!-- Main content -->
     <main class="main-content">
-      <header class="topbar">
-        <div class="breadcrumb">
-          <span>Feather</span>
-          <span class="breadcrumb-separator">/</span>
-          <strong>{{ activePage }}</strong>
-        </div>
-
-        <div class="topbar-right">
-          <div class="system-status">
-            <span class="system-dot"></span>
-            System ready
-          </div>
-          <div class="version-label">0.1.0</div>
-        </div>
-      </header>
+      <AppTopbar :active-page="activePage" />
 
       <div class="page-content">
-        <template v-if="activePage === 'Home'">
-          <section class="welcome-section">
-            <div>
-              <div class="eyebrow">YOUR MINECRAFT WORKSPACE</div>
-              <h1>Welcome to <span>Feather.</span></h1>
-              <p>
-                Everything you need to manage your Minecraft experience.
-              </p>
-            </div>
-            <div class="welcome-decoration">F</div>
-          </section>
-
-          <section class="section">
-            <div class="section-heading">
-              <div>
-                <h2>Overview</h2>
-                <p>Your launcher at a glance.</p>
-              </div>
-            </div>
-
-            <div class="overview-grid">
-              <div class="overview-card">
-                <div class="card-icon purple">◈</div>
-                <div class="card-label">INSTANCES</div>
-                <div class="card-value">0</div>
-                <div class="card-description">No instances created yet</div>
-              </div>
-
-              <div class="overview-card">
-                <div class="card-icon blue">▦</div>
-                <div class="card-label">INSTALLED MODS</div>
-                <div class="card-value">0</div>
-                <div class="card-description">Nothing installed yet</div>
-              </div>
-
-              <div class="overview-card">
-                <div class="card-icon green">↓</div>
-                <div class="card-label">DOWNLOADS</div>
-                <div class="card-value">0</div>
-                <div class="card-description">No active downloads</div>
-              </div>
-            </div>
-          </section>
-
-          <section class="section">
-            <div class="section-heading">
-              <div>
-                <h2>System diagnostics</h2>
-                <p>Check the availability of external services.</p>
-              </div>
-              <span class="section-tag">DEVELOPMENT</span>
-            </div>
-
-            <div class="provider-card">
-              <div class="provider-main">
-                <div class="provider-logo">M</div>
-                <div class="provider-info">
-                  <strong>Modrinth</strong>
-                  <span>Mod catalogue provider</span>
-                </div>
-              </div>
-
-              <div class="provider-details">
-                <div class="provider-status">
-                  <span
-                    class="status-dot"
-                    :class="apiStatus"
-                  ></span>
-                  <span v-if="apiStatus === 'idle'">Not tested</span>
-                  <span v-else-if="apiStatus === 'checking'">Checking...</span>
-                  <span v-else-if="apiStatus === 'online'">Connected</span>
-                  <span v-else>Connection failed</span>
-                </div>
-
-                <button
-                  class="check-button"
-                  :disabled="apiStatus === 'checking'"
-                  @click="checkModrinth"
-                >
-                  <span v-if="apiStatus === 'checking'" class="spinner"></span>
-                  {{ apiStatus === "checking" ? "Checking" : "Check connection" }}
-                </button>
-              </div>
-
-              <div
-                v-if="apiStatus !== 'idle'"
-                class="api-result"
-                :class="apiStatus"
-              >
-                <div class="result-message">{{ apiMessage }}</div>
-                <div v-if="lastChecked" class="result-time">
-                  Last checked: {{ lastChecked }}
-                </div>
-              </div>
-            </div>
-          </section>
-
-          <section class="section">
-            <div class="section-heading">
-              <div>
-                <h2>Recent activity</h2>
-                <p>What's happening in Feather.</p>
-              </div>
-            </div>
-
-            <div class="empty-activity">
-              <div class="empty-icon">◷</div>
-              <strong>No activity yet</strong>
-              <span>Your recent actions will appear here.</span>
-            </div>
-          </section>
-        </template>
+        <HomePage v-if="activePage === 'Home'" />
 
         <section v-else class="placeholder-page">
           <div class="placeholder-icon">◈</div>
@@ -291,6 +81,10 @@ button {
 /* Sidebar */
 
 .sidebar {
+  height: 100vh;
+  position: sticky;
+  top: 0;
+  align-self: flex-start;
   width: 238px;
   min-width: 238px;
   background: var(--sidebar);
