@@ -22,3 +22,35 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+
+# Rust / Cargo
+target/
+**/target/
+Cargo.lock
+
+# Tauri generated files
+src-tauri/target/
+src-tauri/gen/schemas/
+
+# Local application data
+*.db
+*.sqlite
+*.sqlite3
+
+# Temporary files
+*.tmp
+*.bak
+*.old
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# IDE
+*.code-workspace
