@@ -1,22 +1,14 @@
 
 <script setup lang="ts">
-defineProps<{
-  activePage: string;
-}>();
-
-const emit = defineEmits<{
-  navigate: [page: string];
-}>();
-
 const navigation = [
-  { name: "Home", icon: "⌂" },
-  { name: "Catalog", icon: "▦" },
-  { name: "Instances", icon: "◈" },
-  { name: "Downloads", icon: "↓" },
+  { name: "Home", icon: "⌂", path: "/" },
+  { name: "Catalog", icon: "▦", path: "/catalog" },
+  { name: "Instances", icon: "◈", path: "/instances" },
+  { name: "Downloads", icon: "↓", path: "/downloads" },
 ];
 
 const settingsNavigation = [
-  { name: "Settings", icon: "⚙" },
+  { name: "Settings", icon: "⚙", path: "/settings" },
 ];
 </script>
 
@@ -33,31 +25,31 @@ const settingsNavigation = [
     <div class="sidebar-label">WORKSPACE</div>
 
     <nav class="navigation">
-      <button
+      <RouterLink
         v-for="item in navigation"
         :key="item.name"
+        :to="item.path"
         class="nav-item"
-        :class="{ active: activePage === item.name }"
-        @click="emit('navigate', item.name)"
+        active-class="active"
       >
         <span class="nav-icon">{{ item.icon }}</span>
         <span>{{ item.name }}</span>
-      </button>
+      </RouterLink>
     </nav>
 
     <div class="sidebar-label settings-label">PREFERENCES</div>
 
     <nav class="navigation">
-      <button
+      <RouterLink
         v-for="item in settingsNavigation"
         :key="item.name"
+        :to="item.path"
         class="nav-item"
-        :class="{ active: activePage === item.name }"
-        @click="emit('navigate', item.name)"
+        active-class="active"
       >
         <span class="nav-icon">{{ item.icon }}</span>
         <span>{{ item.name }}</span>
-      </button>
+      </RouterLink>
     </nav>
 
     <div class="sidebar-bottom">

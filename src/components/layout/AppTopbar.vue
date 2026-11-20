@@ -1,8 +1,13 @@
 
 <script setup lang="ts">
-defineProps<{
-  activePage: string;
-}>();
+import { computed } from "vue";
+import { useRoute } from "vue-router";
+
+const route = useRoute();
+
+const pageTitle = computed(() => {
+  return String(route.name ?? "Home");
+});
 </script>
 
 <template>
@@ -10,7 +15,7 @@ defineProps<{
     <div class="breadcrumb">
       <span>Feather</span>
       <span class="breadcrumb-separator">/</span>
-      <strong>{{ activePage }}</strong>
+      <strong>{{ pageTitle }}</strong>
     </div>
 
     <div class="topbar-right">
