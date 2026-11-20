@@ -1,4 +1,3 @@
-
 <script setup lang="ts">
 import AppSidebar from "./AppSidebar.vue";
 import AppTopbar from "./AppTopbar.vue";

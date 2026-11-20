@@ -1,43 +1,12 @@
 
 <script setup lang="ts">
-import { ref } from "vue";
-
-import AppSidebar from "./components/layout/AppSidebar.vue";
-import AppTopbar from "./components/layout/AppTopbar.vue";
-import HomePage from "./pages/HomePage.vue";
-
-const activePage = ref("Home");
+import AppLayout from "./components/layout/AppLayout.vue";
 </script>
 
 <template>
-  <div class="app-shell">
-    <AppSidebar
-      :active-page="activePage"
-      @navigate="activePage = $event"
-    />
-
-    <main class="main-content">
-      <AppTopbar :active-page="activePage" />
-
-      <div class="page-content">
-        <HomePage v-if="activePage === 'Home'" />
-
-        <section v-else class="placeholder-page">
-          <div class="placeholder-icon">◈</div>
-          <div class="eyebrow">FEATHER WORKSPACE</div>
-          <h1>{{ activePage }}</h1>
-          <p>This section is under development.</p>
-          <span class="development-badge">COMING IN FUTURE BUILDS</span>
-        </section>
-
-        <footer class="page-footer">
-          <span>FEATHER LAUNCHER</span>
-          <span>Built for Minecraft Java Edition</span>
-        </footer>
-      </div>
-    </main>
-  </div>
+  <AppLayout />
 </template>
+
 
 <style>
 :root {

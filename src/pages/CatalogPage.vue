@@ -1,5 +1,8 @@
+
+<script setup lang="ts">
+import PagePlaceholder from "../components/ui/PagePlaceholder.vue";
+</script>
+
 <template>
-  <section>
-    <h1>Page under development</h1>
-  </section>
+  <PagePlaceholder title="Catalog" icon="▦" />
 </template>
